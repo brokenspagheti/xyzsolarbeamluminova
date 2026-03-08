@@ -3137,10 +3137,20 @@ calcOrange();
 /* ── TIMELINE DRAG SCROLL ── */
 const tl = document.querySelector('.timeline-scroll');
 let tlDown = false, tlX, tlSL;
-tl.addEventListener('mousedown', e => { tlDown=true; tlX=e.pageX-tl.offsetLeft; tlSL=tl.scrollLeft; });
-tl.addEventListener('mouseleave', () => tlDown=false);
-tl.addEventListener('mouseup', () => tlDown=false);
-tl.addEventListener('mousemove', e => { if(!tlDown) return; e.preventDefault(); tl.scrollLeft = tlSL - (e.pageX - tl.offsetLeft - tlX) * 1.4; });
+tl.addEventListener('mousedown', e => { tlDown=true; tlX=e.pageX-tl.offsetLeft; tlSL=tl.scrollLeft; e.preventDefault(); });
+window.addEventListener('mouseup', () => tlDown=false);
+window.addEventListener('mousemove', e => {
+  if(!tlDown) return;
+  const dx = e.pageX - tl.offsetLeft - tlX;
+  tl.scrollLeft = tlSL - dx * 1.4;
+});
+tl.addEventListener('touchstart', e => { tlDown=true; tlX=e.touches[0].pageX-tl.offsetLeft; tlSL=tl.scrollLeft; }, {passive:true});
+window.addEventListener('touchend', () => tlDown=false);
+window.addEventListener('touchmove', e => {
+  if(!tlDown) return;
+  const dx = e.touches[0].pageX - tl.offsetLeft - tlX;
+  tl.scrollLeft = tlSL - dx * 1.4;
+}, {passive:true});
 
 /* ── COMPONENT DATA ── */
 const components = [
